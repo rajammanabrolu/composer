@@ -53,6 +53,7 @@ class Generate(Callback):
             log.info(f'ANNA: Finished generating text from prompts {datetime.now()}')
 
     def generate(self, state: State, logger: Logger):
+        log.info(f'ANNA2: Generating text from prompts {datetime.now()}')
         model = state.model.module if state.is_model_ddp else state.model
         if not isinstance(model, HuggingFaceModel):  # TODO: Extend to support any models that have a generate method.
             raise ValueError(f'Expected HuggingFaceModel, but got {model.__class__.__name__}')
@@ -112,6 +113,7 @@ class Generate(Callback):
                 rows.append([prompt, output_text])
 
             logger.log_table(columns=['prompt', 'generation'], rows=rows, name='generations')
+        log.info(f'ANNA: Finished generating text from prompts {datetime.now()}')
 
         tokenizer.padding_side = original_padding_side
         model.train(mode=original_mode)
