@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Periodically log generations from a set of prompts."""
+import logging
+from datetime import datetime
 from typing import Any, List, Optional, Union, cast
 
 from composer.callbacks.utils import create_interval_scheduler
@@ -10,6 +12,8 @@ from composer.loggers import Logger
 from composer.models import HuggingFaceModel
 from composer.utils import dist
 from composer.utils.import_helpers import MissingConditionalImportError
+
+log = logging.getLogger(__name__)
 
 
 class Generate(Callback):
@@ -44,7 +48,9 @@ class Generate(Callback):
 
     def run_event(self, event: Event, state: State, logger: Logger) -> None:
         if state.get_elapsed_duration() is not None and self.check_interval(state, event):
+            log.info(f'ANNA: Generating text from prompts {datetime.now()}')
             self.generate(state, logger)
+            log.info(f'ANNA: Finished generating text from prompts {datetime.now()}')
 
     def generate(self, state: State, logger: Logger):
         model = state.model.module if state.is_model_ddp else state.model
