@@ -463,8 +463,16 @@ def load_sharded_checkpoint(
                 if not callable(ignore_keys):
                     ignore_keys = glob_filter(ignore_keys)
                 # Call function to modify state_dict
-                log.info('Model keys:' + str(model_state_dict.keys()))
-                print('Model keys:' + str(model_state_dict.keys()))
+                def recursion(model_state_dict):
+                    for x, y in model_state_dict.items():
+                        if isinstance(y, dict):
+                            log.info('Recurse Model keys:' + str(x))
+                            print('Recurse Model keys:' + str(x))
+                            recursion(y)
+                        else:
+                            log.info('Model keys:' + str(x))
+                            print('Model keys:' + str(x))
+                recursion(model_state_dict)
                 ignore_keys(model_state_dict)
 
             dist_cp.load_state_dict(model_state_dict, storage_reader, planner=RenameLoadPlanner(state.model))
