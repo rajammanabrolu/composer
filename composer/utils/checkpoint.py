@@ -464,6 +464,7 @@ def load_sharded_checkpoint(
                     ignore_keys = glob_filter(ignore_keys)
                 # Call function to modify state_dict
                 ignore_keys(model_state_dict)
+                log.info('Model keys:' + str(model_state_dict.keys()))
 
             dist_cp.load_state_dict(model_state_dict, storage_reader, planner=RenameLoadPlanner(state.model))
 
